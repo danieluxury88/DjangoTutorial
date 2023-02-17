@@ -146,3 +146,29 @@ python manage.py sqlmigrate polls 0001
 >>> Choice.objects.filter(question__pub_date__year = current_year)
 >>> c = q.choice_set.filter(choice_text__startswith='Just hack')
 >>> c.delete()
+```
+
+## Django Admin
+
+- Create an admin user
+**python manage.py createsuperuser**
+
+- Start server **python manage.py runserver** and go to http://127.0.0.1:8080/admin/
+
+- Log in with credentials, check editable content: groups and users
+
+- Make the poll app modifiable in the admin
+
+- We need to tell the admin that Question objects have an admin interface. To do this, open the polls/admin.py file, and edit it to look like this:
+
+```
+from django.contrib import admin
+from .models import Question
+admin.site.register(Question)
+```
+- Visit again admin index page. Question has been registered.
+- Enter Question link and note what Django has made:
+ . the form was automatically generate from Question model
+ . the model fields have a HTML widget.
+ . DateTimeField have JavaScript shortcuts.
+ . Additional buttons were added.

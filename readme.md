@@ -39,3 +39,39 @@ urlpatterns = [
     path('admin/', admin.site.urls)
 ]
 ```
+
+## Part 2 - Create a database, create first model and quick introduction to admin site
+
+1. in polls/models.py, create two models: Question and Choice
+
+```
+from django.db import models
+
+class Question(models.Model):
+    question_text = models.CharField(max_length=200)
+    pub_date = models.DateTimeField('data published')
+
+
+class Choice(models.Model):
+    question = models.ForeignKey(Question, on_delete=models.CASCADE)
+    choice_text = models.CharField(max_length=200)
+    votes = models.IntegerField(default=0)
+
+```
+
+2. Add Polls app in Project settings
+3. Run makemigrations command to update changes on the models
+```
+python manage.py makemigrations polls
+```
+4. Run sqlmigrate command
+```
+python manage.py sqlmigrate polls 0001
+```
+
+5. Run migrate command to create those models in the database
+
+
+6. Change the models in models.py
+- run python manage.py makemigrations
+- run python manage.py migrate

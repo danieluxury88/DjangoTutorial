@@ -272,3 +272,18 @@ def index(request):
     context = {'latest_question_list': latest_question_list}
     return render(request, 'polls/index.html', context)
 ```
+
+- Raise 404 error if question does not exist
+```
+from django.http import Http404
+from django.shortcuts import render
+
+from .models import Question
+
+def detail(request, question_id):
+    try:
+        question = Question.objects.get(pk=question_id)
+    except Question.DoesNotExist:
+        raise Http404("Question does not exist")
+    return render (request, 'polls/detail.html', {'question': question})
+```

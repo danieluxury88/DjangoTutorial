@@ -77,7 +77,7 @@ python manage.py sqlmigrate polls 0001
 - run python manage.py makemigrations
 - run python manage.py migrate
 
-## Part 3 - Play with the API
+### Play with the API
 
 - Run **python manage.py shell** to invoke shell
 - Explore the database API usign shell commands
@@ -172,3 +172,43 @@ admin.site.register(Question)
  . the model fields have a HTML widget.
  . DateTimeField have JavaScript shortcuts.
  . Additional buttons were added.
+
+
+ ## Part 3 - Creating new views
+
+- In Django, web pages and other content are delivered by views. Each view is represented by a Python function (or method, in case the case of class-based views). Django will choose a view by examining the URL that's requested (to ve preceise, the part of the URL after the domain name)
+
+ - Add more views to **polls/views.py**. These are different because they take an argument:
+
+ ```
+ def detail(request, question_id):
+    return HttpResponse("You're looking at question %s." % question_id)
+
+def results(request, question_id):
+    response = "You're looking at the results of question %s."
+    return HttpResponse(response % question_id)
+
+def vote(request, question_id):
+    return HttpResponse("You're voting on question %s." % question_id)
+
+```
+
+- Connect the new views into polls.urls module by adding the following path() calls in **polls/urls.py**:
+
+```
+from django.urls import path
+from . import views
+
+urlspatterns = [
+    #ex: /polls/
+    path('', views.index, name = 'index'),
+    #ex: /polls/5/
+    path('<int:question_id>/', view.detail, name ='detail'),
+    #ex: /polls/5/results/
+    path('<int:question_id>/results/', view.results, name = 'results'),
+    #ex: /polls/5/vote/
+    path('<int:question_id>/vote/', view.vote, namte = 'vote'),
+
+]
+```
+- Run server, and access on browser to /polls/34/

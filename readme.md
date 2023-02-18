@@ -148,7 +148,7 @@ python manage.py sqlmigrate polls 0001
 >>> c.delete()
 ```
 
-## Django Admin
+### Django Admin
 
 - Create an admin user
 **python manage.py createsuperuser**
@@ -212,3 +212,63 @@ urlspatterns = [
 ]
 ```
 - Run server, and access on browser to /polls/34/
+
+### Making views do something
+- Read Question db and add info to index view. Modify def index from **views.py**
+
+```
+from django.http import HttpResponse
+
+from . models import Question
+
+def index(request):
+    latest_question_list = Question.objects.order_by('-pub_date')[:5]
+    output = ', '.join([q.question_text for q in latest_question_list])
+    return HttpResponse(output)
+```
+
+- There is a problem here: page's design is hard-coded. Let's use Django template system to separate design from Python.
+
+- First create a directory called **templates** in polls directory, and inside create another directory called **polls**. Within that create a file called **index.html**
+
+```
+{% if latest_question_list %}
+    <ul>
+    {% for question in latest_question_list %}
+        <li><a href ="/polls/{{ question.id }}/">{{ question.question_text }} </a>
+        </li>
+    {% endfor %}
+    </ul>
+{% else %}
+    <p> No polls are available. </p>
+{% endif %}
+
+```
+
+- Update index view in polls/views.py to use template:
+```
+from django.http import HttpResponse
+from django.template import loader
+
+from .models import Question
+
+def index(request):
+    latest_question_list = Question.objects.order_by('-pub_date')[:5]
+    template = loader.get_template('polls/index.html')
+    context = {
+        'latest_question_list':latest_question_list,
+    }
+    return HttpReponse(template.render(context, request))
+```
+- That code load the template called polls/index.html and passes it a context. The context is a dictionary mapping template variable names to Python objects.
+
+- Use render instead of returning HttpResponse. Change **index function in views.py**
+```
+from django.shortcuts import render
+from .model import Question
+
+def index(request):
+    latest_question_list = Question.objects.order_by('-pub_date')[:5]
+    context = {'latest_question_list': latest_question_list}
+    return render(request, 'polls/index.html', context)
+```

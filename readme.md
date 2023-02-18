@@ -309,3 +309,23 @@ def detail (request, question_id):
         {% endfor %}
     </ul>
 ```
+
+- Removing hardcoded URLS in templates; since the name argument in the path() from polls.urls are defined, we can remove a reliance (dependency)
+on specific URL paths defined in url configurations by using **{% url %}** template tag
+```
+#from
+<a href="/polls/{{ question.id }}/">{{ question.question_text }}</a>
+#to
+<a href="{% url 'detail' question.id %}">{{ question.question_text }}</a>
+
+```
+- Url can be changed from
+```
+#from
+    #ie: http://127.0.0.1:8000/polls/5/
+    path('<int:question_id>/', views.detail, name ='detail'),
+    
+#to
+    #ie: http://127.0.0.1:8000/polls/specifics/5/
+    path('specifics/<int:question_id>/', views.detail, name='detail'),
+```

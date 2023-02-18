@@ -287,3 +287,14 @@ def detail(request, question_id):
         raise Http404("Question does not exist")
     return render (request, 'polls/detail.html', {'question': question})
 ```
+
+- Use shortcut get_object_or_404()
+```
+from django.shortcuts import get_object_or_404, render
+
+from .models import Question
+
+def detail (request, question_id):
+    question = get_object_or_404(Question, pk = question_id)
+    return render(request, 'polls/detail.html', {'question': question})
+```  

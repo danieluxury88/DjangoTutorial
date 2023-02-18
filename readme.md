@@ -329,3 +329,30 @@ on specific URL paths defined in url configurations by using **{% url %}** templ
     #ie: http://127.0.0.1:8000/polls/specifics/5/
     path('specifics/<int:question_id>/', views.detail, name='detail'),
 ```
+
+- Namespacing URL names
+The tutorial project has just one app, real projects have several.
+To prevent confusion between different apps views, need to add a namespace in **ulrs.py**
+
+```
+from django.urls import path
+from .import views
+
+app_name = 'polls'
+
+url_patterns = [
+    path('', views.index, name = 'index'),
+    path('<int:question_id>/', views.detail, name = 'detail'),
+    path('<int:question_id>/results/', views.results, name ='results'),
+    path('<int:question_id>/vote/', views.vote, name ='vote'),
+
+]
+```
+
+and update **index.html**
+```
+#from
+<a href="{% url 'detail' question.id %}">{{ question.question_text }}</a>
+#to
+<a href="{% url 'polls:detail' question.id %}">{{ question.question_text }}</a>
+```
